@@ -25,7 +25,7 @@ async def main() -> None:
 
     consumer = AIOKafkaConsumer(
         settings.kafka_topic_ads,
-        bootstrap_servers=settings.kafka_bootstrap_servers,
+        bootstrap_servers=settings.kafka_brokers,
         group_id=settings.kafka_consumer_group,
         value_deserializer=lambda v: json.loads(v.decode("utf-8")),
         enable_auto_commit=False,

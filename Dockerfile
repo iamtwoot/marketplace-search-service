@@ -6,13 +6,9 @@ ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_NO_DEV=1 \
     UV_FROZEN=1 \
-    PYTHONPATH=/app \
-    PATH="/root/.local/bin:$PATH"
+    PYTHONPATH=/app
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl ca-certificates \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 
@@ -23,6 +19,6 @@ COPY . .
 
 RUN uv sync --frozen --no-dev
 
-EXPOSE 8003
+EXPOSE 8000
 
-CMD ["uv", "run", "python", "-m", "bin.api"]
+CMD ["./run.sh"]
