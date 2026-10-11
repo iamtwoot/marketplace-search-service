@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy.engine import make_url
 
 
 class Settings(BaseSettings):
@@ -11,3 +12,10 @@ class Settings(BaseSettings):
     kafka_topic_ads: str = "ads"
     kafka_consumer_group: str = "search-service"
     ad_service_url: str = "http://localhost:8002"
+
+    @property
+    def database_url(self) -> str:
+        url = make_url(self.postgres_connection_string).set(
+            drivername="postgresql+asyncpg"
+        )
+        return url.render_as_string(hide_password=False)
