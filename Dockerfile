@@ -21,4 +21,4 @@ RUN uv sync --frozen --no-dev
 
 EXPOSE 8000
 
-CMD ["./run.sh"]
+CMD ["bash", "./run.sh"]

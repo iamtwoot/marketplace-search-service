@@ -9,7 +9,7 @@ from src.settings import Settings
 
 
 def create_engine(settings: Settings) -> AsyncEngine:
-    return create_async_engine(settings.database_url)
+    return create_async_engine(settings.postgres_connection_string)
 
 
 def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:

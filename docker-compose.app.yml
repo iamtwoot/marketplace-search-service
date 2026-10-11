@@ -20,7 +20,7 @@ services:
       context: .
     command: ["uv", "run", "alembic", "upgrade", "head"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
+      POSTGRES_CONNECTION_STRING: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
     depends_on:
       search-postgres:
         condition: service_healthy
@@ -32,7 +32,7 @@ services:
       context: .
     command: ["uv", "run", "python", "-m", "bin.api"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
+      POSTGRES_CONNECTION_STRING: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
     depends_on:
       search-postgres:
         condition: service_healthy
@@ -46,8 +46,8 @@ services:
       context: .
     command: ["uv", "run", "python", "-m", "bin.consumer"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
-      KAFKA_BOOTSTRAP_SERVERS: redpanda:29092
+      POSTGRES_CONNECTION_STRING: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
+      KAFKA_BROKERS: redpanda:29092
       AD_SERVICE_URL: http://ad-service:8002
     depends_on:
       search-postgres:
