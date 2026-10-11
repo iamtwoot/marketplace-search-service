@@ -44,8 +44,12 @@ class SQLAlchemySearchRepository(SearchRepository):
         if query is not None and query.strip():
             tsquery = func.plainto_tsquery("russian", query)
             rank = func.ts_rank(SearchIndexModel.ts_vector, tsquery)
-            items_query = items_query.where(SearchIndexModel.ts_vector.op("@@")(tsquery)) # noqa: E501
-            count_query = count_query.where(SearchIndexModel.ts_vector.op("@@")(tsquery)) # noqa: E501
+            items_query = items_query.where(
+                SearchIndexModel.ts_vector.op("@@")(tsquery)
+            )  # noqa: E501
+            count_query = count_query.where(
+                SearchIndexModel.ts_vector.op("@@")(tsquery)
+            )  # noqa: E501
 
         if category is not None:
             items_query = items_query.where(SearchIndexModel.category == category)
