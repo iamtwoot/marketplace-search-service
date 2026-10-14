@@ -16,8 +16,11 @@ Read-side CQRS для маркетплейса. Слушает Kafka-топик 
 ```bash
 uv sync
 
-# PostgreSQL
+# PostgreSQL (Kafka/Redpanda поднимается из docker-compose.yml Ad Service)
 docker compose up -d
+
+# Переменные окружения
+echo "AD_SERVICE_URL=http://localhost:8002" > .env
 
 # Миграции
 make migrate
@@ -33,13 +36,15 @@ API стартует на `http://localhost:8003`.
 
 ## Переменные окружения
 
-| Переменная                | По умолчанию                                                      | Описание                           |
-|---------------------------|-------------------------------------------------------------------|------------------------------------|
-| `DATABASE_URL`            | `postgresql+asyncpg://postgres:postgres@localhost:5435/search_db` | Строка подключения к PostgreSQL    |
-| `KAFKA_BOOTSTRAP_SERVERS` | `localhost:9092`                                                  | Kafka-брокеры                      |
-| `KAFKA_TOPIC_ADS`         | `ads`                                                             | Топик с событиями объявлений       |
-| `KAFKA_CONSUMER_GROUP`    | `search-service`                                                  | consumer group                     |
-| `AD_SERVICE_URL`          | `http://localhost:8002`                                           | Базовый URL Ad Service (internal)  |
+| Переменная                    | По умолчанию                                                       | Описание                          |
+|-------------------------------|--------------------------------------------------------------------|-----------------------------------|
+| `POSTGRES_CONNECTION_STRING`  | `postgresql+asyncpg://postgres:postgres@localhost:5435/search_db`  | Строка подключения к PostgreSQL   |
+| `KAFKA_BROKERS`               | `localhost:9092`                                                   | Kafka-брокеры                     |
+| `KAFKA_TOPIC_ADS`             | `ads`                                                              | Топик с событиями объявлений      |
+| `KAFKA_CONSUMER_GROUP`        | `search-service`                                                   | consumer group                    |
+| `AD_SERVICE_URL`              | `http://localhost:8000`                                            | Базовый URL Ad Service (internal) |
+
+Драйвер в `POSTGRES_CONNECTION_STRING` всегда принудительно заменяется на `postgresql+asyncpg`. Ad Service локально слушает порт `8002`, поэтому для локального запуска `AD_SERVICE_URL` нужно переопределить в `.env`.
 
 ## API
 
@@ -47,8 +52,12 @@ API стартует на `http://localhost:8003`.
 
 | Метод | Путь              | Описание                              | Auth |
 |-------|-------------------|---------------------------------------|------|
-| `GET` | `/search`         | Полнотекстовый поиск по объявлениям   | Нет  |
+| `GET` | `/search`         | Полнотекстовый поиск с фильтрами      | Нет  |
 | `GET` | `/search/suggest` | Автодополнение по первым символам     | Нет  |
+
+Параметры `GET /search`: `q`, `category`, `city`, `min_price`, `max_price`, `sort` (`date` / `price_asc` / `price_desc`), `limit` (1–100, по умолчанию 20), `offset`.
+
+Параметры `GET /search/suggest`: `q` (минимум 2 символа), `limit` (1–10, по умолчанию 5).
 
 ## Kafka consumer
 
@@ -70,5 +79,7 @@ API стартует на `http://localhost:8003`.
 | `make consumer`                  | Kafka-консьюмер                   |
 | `make check`                     | Линтинг + форматирование (ruff)   |
 | `make test`                      | Запуск тестов                     |
+| `make lint`                      | `ruff check --fix`                |
+| `make format`                    | `ruff format`                     |
 | `make migrate`                   | Применить миграции                |
 | `make migrate-create name="..."` | Сгенерировать миграцию            |
