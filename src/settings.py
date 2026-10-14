@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     kafka_brokers: str = "localhost:9092"
     kafka_topic_ads: str = "ads"
     kafka_consumer_group: str = "search-service"
-    ad_service_url: str = "http://localhost:8000"
+    ad_service_url: str = "http://localhost:8002"
 
     @property
     def database_url(self) -> str:

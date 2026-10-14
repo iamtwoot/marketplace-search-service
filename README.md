@@ -20,7 +20,7 @@ uv sync
 docker compose up -d
 
 # Переменные окружения
-echo "AD_SERVICE_URL=http://localhost:8002" > .env
+cp .env.example .env  # или отредактировать .env
 
 # Миграции
 make migrate
@@ -42,9 +42,9 @@ API стартует на `http://localhost:8003`.
 | `KAFKA_BROKERS`               | `localhost:9092`                                                   | Kafka-брокеры                     |
 | `KAFKA_TOPIC_ADS`             | `ads`                                                              | Топик с событиями объявлений      |
 | `KAFKA_CONSUMER_GROUP`        | `search-service`                                                   | consumer group                    |
-| `AD_SERVICE_URL`              | `http://localhost:8000`                                            | Базовый URL Ad Service (internal) |
+| `AD_SERVICE_URL`              | `http://localhost:8002`                                            | Базовый URL Ad Service (internal) |
 
-Драйвер в `POSTGRES_CONNECTION_STRING` всегда принудительно заменяется на `postgresql+asyncpg`. Ad Service локально слушает порт `8002`, поэтому для локального запуска `AD_SERVICE_URL` нужно переопределить в `.env`.
+Драйвер в `POSTGRES_CONNECTION_STRING` всегда принудительно заменяется на `postgresql+asyncpg`.
 
 ## API
 
