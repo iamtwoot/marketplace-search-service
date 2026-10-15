@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     kafka_consumer_group: str = "search-service"
     ad_service_url: str = "http://localhost:8002"
 
+    port: int = 8000
+
     @property
     def database_url(self) -> str:
         url = make_url(self.postgres_connection_string).set(
